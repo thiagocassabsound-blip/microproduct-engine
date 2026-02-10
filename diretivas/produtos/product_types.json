@@ -1,0 +1,12 @@
+{
+    "types": [
+        "template",
+        "checklist",
+        "script",
+        "mini tool",
+        "calculator",
+        "spreadsheet",
+        "utility",
+        "guide"
+    ]
+}

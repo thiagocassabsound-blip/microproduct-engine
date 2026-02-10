@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We'd Love Your Feedback</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #7c3aed;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .emoji {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .rating-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .rating-button {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            margin: 0 5px;
+            border-radius: 50%;
+            font-size: 24px;
+            text-decoration: none;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .rating-button:hover {
+            transform: scale(1.1);
+            border-color: #7c3aed;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">💬</div>
+            <h1>How Was Your Experience?</h1>
+        </div>
+
+        <div class="content">
+            <p>Hi there!</p>
+
+            <p>We hope you're enjoying <strong>{{product_name}}</strong>!</p>
+
+            <p>Your feedback helps us improve and create better products. We'd love to hear what you think.</p>
+
+            <p style="text-align: center; margin: 30px 0;"><strong>How would you rate your experience?</strong></p>
+
+            <div class="rating-buttons">
+                <a href="#" class="rating-button">😞</a>
+                <a href="#" class="rating-button">😐</a>
+                <a href="#" class="rating-button">🙂</a>
+                <a href="#" class="rating-button">😊</a>
+                <a href="#" class="rating-button">🤩</a>
+            </div>
+
+            <p style="text-align: center;">
+                <a href="mailto:feedback@fastoolhub.com?subject=Feedback for {{product_name}}" class="cta-button">
+                    Send Detailed Feedback
+                </a>
+            </p>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+                Your honest feedback is incredibly valuable to us. It takes less than a minute and helps us serve you
+                better.
+            </p>
+
+            <p>Thank you!<br><strong>FastoolHub Team</strong></p>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 FastoolHub. All rights reserved.</p>
+            <p>You're receiving this because you purchased {{product_name}}.</p>
+        </div>
+    </div>
+</body>
+
+</html>

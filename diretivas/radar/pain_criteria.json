@@ -1,0 +1,9 @@
+{
+    "scoring_criteria": {
+        "pain_score": "Intensity of the problem. 10 = 'I am losing money/time rapidly'. 1 = 'Ideally would be nice to fix'.",
+        "urgency_score": "Time sensitivity. 10 = 'Need fix today'. 1 = 'Can wait months'.",
+        "willingness_to_pay_score": "Commercial intent. 10 = 'I will pay $100+ right now'. 1 = 'Searching for free tool only'.",
+        "frequency_score": "10 = Daily occurrence. 1 = Once a year.",
+        "role_value_score": "10 = High value (Business Owner, Enterprise). 1 = Student/Hobbyist."
+    }
+}

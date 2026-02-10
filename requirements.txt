@@ -1,0 +1,11 @@
+requests
+beautifulsoup4
+feedparser
+openai
+python-dotenv
+pandas
+playwright
+flask
+flask-cors
+stripe
+resend
