@@ -54,240 +54,200 @@ class PageBuilder:
     <!-- Google Analytics 4 -->
     {analytics_script}
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {{
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
-            --dark-bg: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }}
+        body {{ font-family: 'Inter', sans-serif; }}
+        .glass {{ background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }}
+        .gradient-text {{ background: linear-gradient(135deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
         
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        
-        body {{
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }}
-        
-        .container {{
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }}
-        
-        /* Glassmorphism Header */
-        header {{
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }}
-        
-        .hero {{
-            padding: 160px 0 100px;
-            text-align: center;
-            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.15), transparent 40%);
-        }}
-        
-        h1 {{
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }}
-        
-        .hero p {{
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }}
-        
-        .cta-button {{
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 16px 40px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }}
-        
-        .cta-button:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
-        }}
-
-        .pain-section {{
-            padding: 80px 0;
-            background: var(--card-bg);
-            margin: 40px 0;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }}
-
-        .features-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }}
-
-        .feature-card {{
-            background: rgba(255,255,255,0.03);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }}
-        
-        .feature-card:hover {{
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-5px);
-        }}
-
-        .feature-card h3 {{
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }}
-
-        .pricing-section {{
-            text-align: center;
-            padding: 80px 0;
-        }}
-
-        .price-tag {{
-            font-size: 4rem;
-            font-weight: 700;
-            color: white;
-            margin: 20px 0;
-        }}
-
-        .guarantee {{
-            margin-top: 40px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }}
-
-        footer {{
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 40px 0;
-            text-align: center;
-            color: var(--text-muted);
-            margin-top: 80px;
-        }}
-
-        /* Responsive */
-        @media (max-width: 768px) {{
-            h1 {{ font-size: 2.5rem; }}
-            .hero {{ padding: 120px 0 60px; }}
-        }}
+        /* A/B Test Variants - Hidden by default to prevent flash */
+        .variant-a, .variant-b {{ display: none; }}
     </style>
 </head>
-<body>
-    <header>
-        <div class="container">
-            <h2 style="font-size: 1.2rem; font-weight: 700;">{product_name}</h2>
-        </div>
-    </header>
+<body class="bg-slate-900 text-slate-100 antialiased overflow-x-hidden">
 
-    <section class="hero">
-        <div class="container">
-            <h1>{headline}</h1>
-            <p>{subheadline}</p>
-            <a href="#pricing" class="cta-button" id="main-cta">{cta_text}</a>
+    <!-- A/B Logic Script -->
+    <script>
+        // Simple client-side split testing
+        const variant = Math.random() < 0.5 ? 'A' : 'B';
+        document.documentElement.setAttribute('data-variant', variant);
+        console.log("A/B Test Assigned Variant:", variant);
+        
+        document.addEventListener('DOMContentLoaded', () => {{
+            document.querySelectorAll(`.variant-${{variant.toLowerCase()}}`).forEach(el => el.style.display = 'block');
+            document.querySelectorAll('.variant-common').forEach(el => el.style.display = 'block');
+            
+            // Track assignment
+            if (typeof trackEvent === 'function') {{
+                trackEvent('ab_assignment', {{ 'variant': variant }});
+            }}
+        }});
+    </script>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <span class="text-xl font-bold tracking-tight text-white">{product_name}</span>
+                <a href="#pricing" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-full font-medium transition shadow-lg shadow-indigo-600/30 text-sm">
+                    Get Access
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 pointer-events-none">
+            <div class="absolute top-20 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-600/20 rounded-full blur-[100px]"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+            
+            <!-- VARIANT A: Benefit Focused -->
+            <div class="variant-a">
+                <span class="inline-block py-1 px-3 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
+                    🚀 Proven Strategy
+                </span>
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight">
+                    {headline}
+                </h1>
+            </div>
+
+            <!-- VARIANT B: Urgency/Problem Focused -->
+            <div class="variant-b">
+                <span class="inline-block py-1 px-3 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm font-medium mb-6">
+                    🔥 Limited Availability
+                </span>
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight">
+                    Stop Losing Time. <span class="gradient-text">{headline}</span>
+                </h1>
+            </div>
+
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                {subheadline}
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#pricing" onclick="trackCheckout()" class="w-full sm:w-auto bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-100 transition shadow-xl hover:scale-105 transform duration-200">
+                    {cta_text}
+                </a>
+                <span class="text-sm text-slate-500 flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Instant Access
+                </span>
+            </div>
         </div>
     </section>
 
-    <section class="container pain-section">
-        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h2 style="font-size: 2rem; margin-bottom: 20px;">{pain_agitation}</h2>
-            <p style="font-size: 1.1rem; color: var(--text-muted);">{solution_promise}</p>
+    <!-- Social Proof / Trust -->
+    <section class="py-10 border-y border-slate-800 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm text-slate-500 font-medium mb-6 uppercase tracking-wider">Trusted by professionals</p>
+            <div class="flex flex-wrap justify-center gap-12 opacity-50 grayscale hover:grayscale-0 transition duration-500">
+               <!-- Placeholders for logos -->
+               <div class="text-xl font-bold text-slate-300">ACME Corp</div>
+               <div class="text-xl font-bold text-slate-300">GlobalTech</div>
+               <div class="text-xl font-bold text-slate-300">IndieMaker</div>
+               <div class="text-xl font-bold text-slate-300">SaaS Inc</div>
+            </div>
         </div>
     </section>
 
-    <section class="container">
-        <div class="features-grid">
-            {benefits_html}
+    <!-- Problem/Agitation -->
+    <section class="py-24 bg-slate-900">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="glass rounded-2xl p-8 md:p-12 border border-slate-700/50 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-[80px]"></div>
+                
+                <h2 class="text-3xl font-bold mb-6 text-white relative z-10">Does this sound familiar?</h2>
+                <p class="text-xl text-slate-300 leading-relaxed mb-6 font-light">
+                    {pain_agitation}
+                </p>
+                <div class="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent my-8"></div>
+                <p class="text-lg text-indigo-400 font-medium">
+                    {solution_promise}
+                </p>
+            </div>
         </div>
     </section>
 
-    <section class="pricing-section" id="pricing">
-        <div class="container">
-            <h2>Get Started Today</h2>
-            <div class="price-tag">{pricing_text}</div>
-            <a href="#" class="cta-button" onclick="startCheckout()">{cta_text}</a>
-            <p class="guarantee">30-Day Money Back Guarantee • Instant Access</p>
+    <!-- Benefits Grid -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Everything you need</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Designed to solve your specific challenges immediately.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                {benefits_html}
+            </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 MicroProduct Systems. All rights reserved.</p>
+    <!-- Pricing -->
+    <section id="pricing" class="py-24 bg-slate-900 overflow-hidden relative">
+        <div class="max-w-md mx-auto px-4 relative z-10">
+            <div class="glass rounded-3xl p-1 border border-indigo-500/30 shadow-2xl shadow-indigo-500/10">
+                <div class="bg-slate-900/90 rounded-[22px] p-8 md:p-12 text-center">
+                    <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">
+                        One-time Payment
+                    </span>
+                    <h3 class="text-xl text-slate-300 mb-2">Lifetime Access</h3>
+                    <div class="text-6xl font-bold text-white mb-2 tracking-tight">
+                        {pricing_text}
+                    </div>
+                    <p class="text-slate-500 text-sm mb-8">SECURE PAYMENT VIA STRIPE</p>
+                    
+                    <a href="#" onclick="trackCheckout()" class="block w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg py-4 rounded-xl transition shadow-lg shadow-indigo-600/25 mb-6">
+                        {cta_text}
+                    </a>
+                    
+                    <ul class="text-left space-y-3 text-slate-400 text-sm mb-8">
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Instant Digital Delivery
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> 100% Satisfaction Guarantee
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Secure Encryption
+                        </li>
+                    </ul>
+
+                    <div class="text-xs text-slate-600 pt-6 border-t border-slate-800">
+                        30-Day Money Back Guarantee. No questions asked.
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-800 text-center text-slate-500 text-sm">
+        <p>&copy; 2024 MicroProduct Systems. All rights reserved.</p>
     </footer>
 
     <script>
-        // Simple Frontend Telemetry with GA4 integration
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("Telemetry: Page Visit Recorded");
-            
-            // Track page view in GA4
-            if (typeof trackEvent === 'function') {{
-                trackEvent('page_view', {{
-                    'page_title': document.title,
-                    'page_location': window.location.href
-                }});
-            }}
-            
-            // In a real production env, you would send this to your backend
-            // navigator.sendBeacon('/api/track', JSON.stringify({{type: 'visit'}}));
-        }});
-
+        lucide.createIcons();
+        
         function trackCheckout() {{
-            console.log("Telemetry: Checkout Start Recorded");
-            
-            // Track checkout start in GA4
+            console.log("Telemetry: Checkout Start");
             if (typeof trackEvent === 'function') {{
                 trackEvent('begin_checkout', {{
+                    'value': parseFloat('{pricing_text}'.replace(/[^0-9.]/g, '')),
                     'currency': 'USD',
-                    'value': parseFloat('{pricing_text}'.replace('$', '')),
-                    'items': [{{
-                        'item_name': '{product_name}',
-                        'price': parseFloat('{pricing_text}'.replace('$', ''))
-                    }}]
+                    'variant': document.documentElement.getAttribute('data-variant')
                 }});
-            }}
-            
-            // Track CTA click
-            if (typeof trackEvent === 'function') {{
+                
                 trackEvent('cta_click', {{
-                    'button_text': '{cta_text}',
-                    'product_name': '{product_name}'
+                    'location': 'pricing_section'
                 }});
             }}
-            
-            // Backend tracking
-            // navigator.sendBeacon('/api/track', JSON.stringify({{type: 'checkout_start'}}));
         }}
     </script>
 </body>
@@ -305,17 +265,23 @@ class PageBuilder:
         benefits_html = ""
         for benefit in copy_data.get('benefits', []):
             benefits_html += f"""
-            <div class="feature-card">
-                <h3>Benefit</h3>
-                <p>{benefit}</p>
+            <div class="glass p-8 rounded-2xl hover:bg-white/5 transition duration-300 group">
+                <div class="w-12 h-12 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                    <i data-lucide="check" class="text-indigo-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Core Benefit</h3>
+                <p class="text-slate-400 leading-relaxed">{benefit}</p>
             </div>
             """
         # If we have features, add them too or mix
         for feature in copy_data.get('features', []):
              benefits_html += f"""
-            <div class="feature-card">
-                <h3>Feature</h3>
-                <p>{feature}</p>
+            <div class="glass p-8 rounded-2xl hover:bg-white/5 transition duration-300 group">
+                <div class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300">
+                    <i data-lucide="zap" class="text-pink-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Feature</h3>
+                <p class="text-slate-400 leading-relaxed">{feature}</p>
             </div>
             """
 

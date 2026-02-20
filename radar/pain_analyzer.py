@@ -71,13 +71,7 @@ class PainAnalyzer:
 
         except Exception as e:
             logger.error(f"Error scoring pain points: {e}")
-            logger.warning("Falling back to MOCK scores due to error.")
-            for p in pain_points:
-                p['pain_score'] = 8
-                p['urgency_score'] = 7
-                p['willingness_to_pay_score'] = 6
-                p['frequency_score'] = 5
-                p['role_value_score'] = 5
+            raise  # Re-raise in production instead of falling back to MOCK
             return pain_points
 
     def cluster_pains(self, scored_pains):
@@ -123,10 +117,4 @@ class PainAnalyzer:
 
         except Exception as e:
             logger.error(f"Error clustering pains: {e}")
-            logger.warning("Falling back to MOCK clusters due to error.")
-            return [{
-                "cluster_name": "Automated Reporting Tool",
-                "aggregate_pain_score": 8.5,
-                "contained_pain_ids": [0, 1],
-                "potential_solution_hypothesis": "A python script that converts PDF bank statements to Excel."
-            }]
+            raise  # Re-raise in production instead of falling back to MOCK

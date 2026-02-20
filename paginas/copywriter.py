@@ -68,14 +68,4 @@ class Copywriter:
             return json.loads(response.choices[0].message.content)
         except Exception as e:
             logger.error(f"Error generating copy: {e}")
-            logger.warning("Falling back to MOCK copy due to error.")
-            return {
-                "headline": "Stop Spending Hours on Monthly Reports",
-                "subheadline": "Automate your bank-to-excel workflow in seconds with our simple script.",
-                "pain_agitation": "Are you tired of manually copying data from PDF bank statements and making expensive errors?",
-                "solution_promise": "Our Python Converter does it for you instantly, with 100% accuracy.",
-                "benefits": ["Save 10+ hours per month", "Eliminate copy-paste errors", "No coding skills required"],
-                "features": ["Drag & Drop Interface", "Supports all major banks", "Export to CSV/XLSX"],
-                "cta_text": "Get Instant Access - $9",
-                "pricing_text": "Only $9 (One-time payment)"
-            }
+            raise  # Re-raise in production instead of falling back to MOCK

@@ -17,22 +17,17 @@ class ParserAgent:
     def __init__(self):
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
-            logger.warning("OPENAI_API_KEY not found in environment variables.")
-            self.client = None
-        else:
-            self.client = OpenAI(api_key=api_key)
+            logger.error("OPENAI_API_KEY not configured. Pain point parsing requires this environment variable.")
+            raise ValueError("Pain point parsing requires OPENAI_API_KEY environment variable")
+        
+        self.client = OpenAI(api_key=api_key)
+        logger.info("✅ OpenAI client initialized for Parser")
 
     def extract_pain_points(self, text_content, source_url=""):
         """
         Extracts structured pain points from text using LLM.
         """
-        if not self.client:
-            logger.warning("No OpenAI Client available. Returning MOCK pain points.")
-            return [
-                {"problem": "Report generation takes too long", "frustration_level": "High", "context": "End of month reporting"},
-                {"problem": "Manual data entry errors", "frustration_level": "Medium", "context": "Copying from PDF to Excel"},
-                {"problem": "Tool is too expensive for small teams", "frustration_level": "High", "context": "$99/mo subscription"}
-            ]
+        # Client validation happens in __init__, so this should never be None in production
 
         if len(text_content) > 10000:
              # Try to clean it better first if it's raw HTML disguised as text
@@ -94,12 +89,7 @@ class ParserAgent:
 
         except Exception as e:
             logger.error(f"Error parsing with LLM: {e}")
-            logger.warning("Falling back to MOCK pain points due to error.")
-            return [
-                {"problem": "Report generation takes too long", "frustration_level": "High", "context": "End of month reporting"},
-                {"problem": "Manual data entry errors", "frustration_level": "Medium", "context": "Copying from PDF to Excel"},
-                {"problem": "Tool is too expensive for small teams", "frustration_level": "High", "context": "$99/mo subscription"}
-            ]
+            raise  # Re-raise in production instead of falling back to MOCK
 
     def run(self, text, url=""):
         return self.extract_pain_points(text, url)

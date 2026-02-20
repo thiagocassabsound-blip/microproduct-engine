@@ -26,17 +26,17 @@ class EmailAgent:
         self.log_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs', 'email_logs.jsonl')
         
         if not self.api_key:
-            logger.warning("RESEND_API_KEY not found. Email sending will be mocked.")
-            self.client = None
-        else:
-            try:
-                import resend
-                resend.api_key = self.api_key
-                self.client = resend
-                logger.info("Resend client initialized successfully.")
-            except ImportError:
-                logger.warning("Resend library not installed. Run: pip install resend")
-                self.client = None
+            logger.error("RESEND_API_KEY not configured. Email delivery requires this environment variable.")
+            raise ValueError("Email delivery requires RESEND_API_KEY environment variable")
+        
+        try:
+            import resend
+            resend.api_key = self.api_key
+            self.client = resend
+            logger.info(f"✅ Resend client initialized successfully (from: {self.from_email})")
+        except ImportError:
+            logger.error("Resend library not installed. Run: pip install resend")
+            raise ImportError("Email delivery requires 'resend' package. Install with: pip install resend")
     
     def _load_template(self, template_name):
         """
@@ -111,10 +111,7 @@ class EmailAgent:
         
         subject = f"🎁 Your {product_info.get('name', 'Product')} is Ready!"
         
-        if not self.client:
-            logger.warning("MOCK: Product delivery email not sent (Resend not configured)")
-            self._log_email(email, subject, 'mock')
-            return True  # Mock success
+        # Client validation happens in __init__, so this should never be None in production
         
         try:
             response = self.client.Emails.send({
@@ -150,10 +147,7 @@ class EmailAgent:
         
         subject = f"✅ Payment Confirmed - {order_info.get('product_name', 'Order')}"
         
-        if not self.client:
-            logger.warning("MOCK: Payment confirmation email not sent (Resend not configured)")
-            self._log_email(email, subject, 'mock')
-            return True
+        # Client validation happens in __init__, so this should never be None in production
         
         try:
             response = self.client.Emails.send({
@@ -187,10 +181,7 @@ class EmailAgent:
         
         subject = f"💬 How was {product_name}? We'd love your feedback!"
         
-        if not self.client:
-            logger.warning("MOCK: Feedback request email not sent (Resend not configured)")
-            self._log_email(email, subject, 'mock')
-            return True
+        # Client validation happens in __init__, so this should never be None in production
         
         try:
             response = self.client.Emails.send({

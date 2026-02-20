@@ -13,7 +13,12 @@ load_env_file()
 class DeployManager:
     def __init__(self):
         self.deploy_token = os.getenv("DEPLOY_TOKEN")
-        self.domain = os.getenv("DOMAIN_NAME", "localhost")
+        self.domain = os.getenv("VERCEL_DOMAIN")
+        if not self.domain:
+            # Fallback to legacy for transition, then raise if both missing
+            self.domain = os.getenv("DOMAIN_NAME", "localhost")
+            if self.domain == "localhost":
+                 logger.warning("VERCEL_DOMAIN not set. Using localhost.")
 
     def deploy_local(self, html_path, product_slug):
         """

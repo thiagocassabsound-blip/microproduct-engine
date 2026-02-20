@@ -25,16 +25,30 @@ def setup_logger(name=__name__, log_file='system.log', level=logging.INFO):
     return logger
 
 def load_env_file(filepath=None):
-    """Load environment variables from a .env file"""
-    if filepath is None:
-        filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
-    
-    if not os.path.exists(filepath):
+    """Load environment variables from a .env file using python-dotenv"""
+    try:
+        from dotenv import load_dotenv
+        if filepath is None:
+            filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+        
+        if os.path.exists(filepath):
+            load_dotenv(filepath)
+            return True
         return False
+    except ImportError:
+        # Fallback to manual parsing if dotenv is not installed
+        if filepath is None:
+            filepath = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+        
+        if not os.path.exists(filepath):
+            return False
 
-    with open(filepath, 'r') as f:
-        for line in f:
-            if line.strip() and not line.startswith('#'):
-                key, value = line.strip().split('=', 1)
-                os.environ[key] = value
-    return True
+        with open(filepath, 'r') as f:
+            for line in f:
+                if line.strip() and not line.startswith('#'):
+                    try:
+                        key, value = line.strip().split('=', 1)
+                        os.environ[key] = value
+                    except ValueError:
+                        continue
+        return True

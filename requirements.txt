@@ -9,3 +9,4 @@ flask
 flask-cors
 stripe
 resend
+google-analytics-data

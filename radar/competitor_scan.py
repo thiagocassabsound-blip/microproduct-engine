@@ -14,6 +14,7 @@ load_env_file()
 
 class CompetitorScan:
     def __init__(self):
+        logger.warning("DEPRECATED: CompetitorScan is legacy. Use CompetitorScanB.")
         api_key = os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(api_key=api_key) if api_key else None
 
@@ -52,20 +53,14 @@ class CompetitorScan:
             return json.loads(response.choices[0].message.content)
         except Exception as e:
             logger.error(f"Error in gap analysis: {e}")
-            logger.warning("Falling back to MOCK gap analysis due to error.")
-            return {
-                "ignored_complaints": ["Complex UI", "No PDF support"],
-                "price_gaps": ["Competitors charge >$50/mo"],
-                "usability_gaps": ["Requires coding knowledge"]
-            }
+            raise  # Re-raise in production instead of falling back to MOCK
 
     def calculate_differentiation(self, my_solution_proposal, competitor_info):
         """
         Calculates a differentiation score.
         """
         # Real differentiation logic
-        if not self.client:
-             return {"differentiation_score": 8.5, "analysis": "Mock analysis: Predicted higher speed to value."}
+        # Client validation should happen earlier in the chain
 
         prompt = f"""
         Compare my proposed solution against the competitor landscape.
@@ -92,5 +87,4 @@ class CompetitorScan:
             return json.loads(response.choices[0].message.content)
         except Exception as e:
             logger.error(f"Error calculating differentiation: {e}")
-            logger.warning("Falling back to MOCK differentiation.")
-            return {"differentiation_score": 8.5, "analysis": "Mock analysis: Predicted higher speed to value."}
+            raise  # Re-raise in production instead of falling back to MOCK

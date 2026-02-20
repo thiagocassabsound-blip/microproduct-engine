@@ -21,6 +21,17 @@ except ImportError:
 logger = setup_logger('WebhookServer')
 load_env_file()
 
+# Validate required environment variables on startup
+required_env_vars = ['WEBHOOK_SECRET', 'PAYMENT_API_KEY', 'RESEND_API_KEY', 'EMAIL_FROM']
+missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+
+if missing_vars:
+    logger.error(f"Missing required environment variables: {', '.join(missing_vars)}")
+    # We don't crash here to allow local development, but in production this should be monitored
+    logger.warning("PROD WARNING: Webhook server starting with missing variables.")
+
+logger.info(f"✅ Webhook server components initialized. Email sender: {os.getenv('EMAIL_FROM')}")
+
 app = Flask(__name__)
 
 # Initialize Email Agent
